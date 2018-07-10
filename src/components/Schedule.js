@@ -5,6 +5,10 @@ import format from 'date-fns/format';
 class Schedule extends Component {
 
   render () {
+    if (!this.props.games) {
+      return null
+    }
+
     if (Object.keys(this.props.games).length === 0) {
       return <div key='beans'>Currently no upcomming games.</div>
     }
@@ -19,7 +23,7 @@ class Schedule extends Component {
               <div>
                 <DateLabel>{format(date, 'MMMM Do')}</DateLabel>
                 <ScheduleItems upcomming={this.props.upcomming}>
-                  {this.props.games[date].map(game => <ScheduleItem game={game} />)}
+                  {this.props.games[date].map(game => <ScheduleItem game={game} teamName={this.props.team}/>)}
                 </ScheduleItems>
               </div>
             )
@@ -30,16 +34,12 @@ class Schedule extends Component {
   }
 }
 
-const ScheduleItem = (props) => {
-  const { game } = props;
-
-  return (
-    <Game>
-      <div>Court {game.playingSurface} at {game.time}</div>
-      <div>{game.competitor1} vs {game.competitor2}</div>
-    </Game>
-  )
-}
+const ScheduleItem = ({ game, teamName }) => (
+  <Game>
+    <div>Court {game.playingSurface} at {game.time}</div>
+    <div> vs {game.competitor1 === teamName ? game.competitor2 : game.competitor1}</div>
+  </Game>
+)
 
 const DateLabel = styled.div`
   font-size: 1.1rem;
