@@ -1,11 +1,7 @@
-import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import React from 'react'
+import styled, { keyframes } from 'styled-components'
 
-const Loader = () => {
-  return (
-    <Animate/>
-  )
-}
+const Loader = () => <Animate />
 
 const ballScale = keyframes`
   0% {

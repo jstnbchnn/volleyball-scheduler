@@ -1,16 +1,15 @@
-import React, { Component, Fragment } from 'react';
-import styled from 'styled-components';
-import format from 'date-fns/format';
+import React, { Component, Fragment } from 'react'
+import styled from 'styled-components'
+import format from 'date-fns/format'
 
 class Schedule extends Component {
-
-  render () {
+  render() {
     if (!this.props.games) {
       return null
     }
 
     if (Object.keys(this.props.games).length === 0) {
-      return <div key='beans'>Currently no upcomming games.</div>
+      return <div key="beans">Currently no upcomming games.</div>
     }
 
     return (
@@ -18,26 +17,32 @@ class Schedule extends Component {
         <Title>{`${this.props.title} for ${this.props.team}`}</Title>
         <ScheduleWrapper upcomming={this.props.upcomming}>
           {Object.keys(this.props.games).map(date => {
-
             return (
               <div>
                 <DateLabel>{format(date, 'MMMM Do')}</DateLabel>
                 <ScheduleItems upcomming={this.props.upcomming}>
-                  {this.props.games[date].map(game => <ScheduleItem game={game} teamName={this.props.team}/>)}
+                  {this.props.games[date].map(game => (
+                    <ScheduleItem game={game} teamName={this.props.team} />
+                  ))}
                 </ScheduleItems>
               </div>
             )
           })}
         </ScheduleWrapper>
       </Fragment>
-    );
+    )
   }
 }
 
 const ScheduleItem = ({ game, teamName }) => (
   <Game>
-    <div>Court {game.playingSurface} at {game.time}</div>
-    <div> vs {game.competitor1 === teamName ? game.competitor2 : game.competitor1}</div>
+    <div>
+      Court {game.playingSurface} at {game.time}
+    </div>
+    <div>
+      {' '}
+      vs {game.competitor1 === teamName ? game.competitor2 : game.competitor1}
+    </div>
   </Game>
 )
 
@@ -53,14 +58,14 @@ const Title = styled.span`
 
 const ScheduleItems = styled.div`
   display: flex;
-  flex-direction: ${props => props.upcomming ? 'column' : 'row'};
+  flex-direction: ${props => (props.upcomming ? 'column' : 'row')};
   align-items: center;
   padding: 0 20px;
 `
 
 const ScheduleWrapper = styled.div`
   display: flex;
-  flex-direction: ${props => props.upcomming ? 'row' : 'column'}
+  flex-direction: ${props => (props.upcomming ? 'row' : 'column')}
   padding-top: 20px;
 `
 
@@ -71,4 +76,4 @@ const Game = styled.div`
   padding: 10px;
 `
 
-export default Schedule;
+export { Schedule }

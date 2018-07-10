@@ -1,7 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
-import ReactSelect from 'react-select';
-import 'react-select/dist/react-select.css';
+import React from 'react'
+import styled from 'styled-components'
+import ReactSelect from 'react-select'
+import 'react-select/dist/react-select.css'
 
 const Select = ({ name, onChange, options, value, disabled, label }) => (
   <label for={name}>

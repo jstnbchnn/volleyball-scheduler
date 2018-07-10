@@ -1,14 +1,13 @@
-import React, { Component, Fragment } from 'react';
-import axios from 'axios';
-import styled, { keyframes } from 'styled-components';
+import React, { Component, Fragment } from 'react'
+import axios from 'axios'
+import styled, { keyframes } from 'styled-components'
 
-import Header from '../components/header';
-import Schedule from '../components/Schedule';
-import Loader from '../components/Loader';
-import Select from '../components/Select';
+import Header from '../components/header'
+import { Schedule } from '../components/Schedule'
+import Loader from '../components/Loader'
+import Select from '../components/Select'
 
 class App extends Component {
-
   state = {
     divisions: [],
     teams: [],
@@ -17,56 +16,49 @@ class App extends Component {
     selectedTeam: '',
     pastGames: null,
     isLoading: true,
-    showSchedule: true
+    showSchedule: true,
   }
 
   async componentDidMount() {
-
     const { data: divisions } = await axios.get(process.env.API_BASE_URL)
 
     const constructedDivisions = divisions.reduce((acc, division) => {
       const { id, name } = division
 
-      return [
-        ...acc,
-        { value: id, label: name }
-      ]
+      return [...acc, { value: id, label: name }]
     }, [])
 
     this.setState({
       divisions: constructedDivisions,
-      isLoading: false
+      isLoading: false,
     })
-
   }
 
-  handleDivisionChange = async (selectedDivision) => {
-
+  handleDivisionChange = async selectedDivision => {
     if (selectedDivision === '') {
       this.setState({ selectedDivision })
       return
     }
 
-    const { data } = await axios.get(`${process.env.API_BASE_URL}/division/${selectedDivision.value}`)
+    const { data } = await axios.get(
+      `${process.env.API_BASE_URL}/division/${selectedDivision.value}`
+    )
 
     const teams = data.reduce((acc, team) => {
       const { id, name } = team
 
-      return [
-        ...acc,
-        { value: id, label: name}
-      ]
+      return [...acc, { value: id, label: name }]
     }, [])
 
     this.setState({
       selectedDivision,
       teams,
       futureGames: null,
-      selectedTeam: ''
+      selectedTeam: '',
     })
   }
 
-  handleTeamChange = async (selectedTeam) => {
+  handleTeamChange = async selectedTeam => {
     if (!selectedTeam) {
       this.setState({ selectedTeam })
       return
@@ -74,8 +66,13 @@ class App extends Component {
 
     const { selectedDivision } = this.state
 
-    const { data: { futureGames, pastGames }} =
-      await axios.get(`${process.env.API_BASE_URL}/teams?teamId=${selectedTeam.value}&divisionId=${selectedDivision.value}`)
+    const {
+      data: { futureGames, pastGames },
+    } = await axios.get(
+      `${process.env.API_BASE_URL}/teams?teamId=${
+        selectedTeam.value
+      }&divisionId=${selectedDivision.value}`
+    )
 
     this.setState({
       selectedTeam,
@@ -91,14 +88,16 @@ class App extends Component {
       divisions,
       selectedTeam,
       teams,
-      futureGames
+      futureGames,
     } = this.state
 
     return (
       <Fragment>
         <Header siteTitle="VBall Schedule" />
         <Wrapper>
-          {isLoading ? <Loader/> :
+          {isLoading ? (
+            <Loader />
+          ) : (
             <Options>
               <Select
                 name="divison-select"
@@ -116,7 +115,7 @@ class App extends Component {
                 disabled={teams.length === 0}
               />
             </Options>
-          }
+          )}
           <Schedule
             title="Upcomming Games"
             team={selectedTeam.label}
@@ -124,7 +123,7 @@ class App extends Component {
           />
         </Wrapper>
       </Fragment>
-    );
+    )
   }
 }
 
@@ -153,4 +152,4 @@ const Options = styled.div`
   margin-left: 15px;
 `
 
-export default App;
+export default App

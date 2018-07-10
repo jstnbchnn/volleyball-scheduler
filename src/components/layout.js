@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
-import { StaticQuery } from "gatsby"
+import { StaticQuery } from 'gatsby'
 
 import Header from './header'
-import '../themes/base';
+import '../themes/base'
 import './layout.css'
 
 const Layout = ({ children, data }) => (
