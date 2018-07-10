@@ -1,24 +1,23 @@
 import React, { Component, Fragment } from 'react';
 import axios from 'axios';
 import styled, { keyframes } from 'styled-components';
-import Select from 'react-select';
-import 'react-select/dist/react-select.css';
 
+import Header from '../components/header';
 import Schedule from '../components/Schedule';
-import Standings from '../components/Standings';
 import Loader from '../components/Loader';
+import Select from '../components/Select';
 
 class App extends Component {
 
   state = {
     divisions: [],
     teams: [],
+    futureGames: null,
     selectedDivision: '',
     selectedTeam: '',
-    futureGames: null,
     pastGames: null,
-    standingsData: null,
-    isLoading: true
+    isLoading: true,
+    showSchedule: true
   }
 
   async componentDidMount() {
@@ -34,14 +33,19 @@ class App extends Component {
       ]
     }, [])
 
-      this.setState({
-        divisions: constructedDivisions,
-        isLoading: false
-      })
+    this.setState({
+      divisions: constructedDivisions,
+      isLoading: false
+    })
 
   }
 
   handleDivisionChange = async (selectedDivision) => {
+
+    if (selectedDivision === '') {
+      this.setState({ selectedDivision })
+      return
+    }
 
     const { data } = await axios.get(`${process.env.API_BASE_URL}/division/${selectedDivision.value}`)
 
@@ -57,9 +61,8 @@ class App extends Component {
     this.setState({
       selectedDivision,
       teams,
-      futureGames: [],
-      pastGames: [],
-      selectedTeam: null
+      futureGames: null,
+      selectedTeam: ''
     })
   }
 
@@ -71,60 +74,56 @@ class App extends Component {
 
     const { selectedDivision } = this.state
 
-    const schedulePromise =
-      axios.get(`${process.env.API_BASE_URL}/teams?teamId=${selectedTeam.value}&divisionId=${selectedDivision.value}`)
-
-    const standingsPromise =
-      axios.get(`${process.env.API_BASE_URL}/standings?divisionId=${selectedDivision.value}`)
-
-    const [ { data: { futureGames, pastGames }}, { data: standingsData }] =
-      await Promise.all([ schedulePromise, standingsPromise ])
+    const { data: { futureGames, pastGames }} =
+      await axios.get(`${process.env.API_BASE_URL}/teams?teamId=${selectedTeam.value}&divisionId=${selectedDivision.value}`)
 
     this.setState({
       selectedTeam,
       futureGames,
       pastGames,
-      standingsData
     })
   }
 
   render() {
-    const { selectedDivision, selectedTeam } = this.state
+    const {
+      isLoading,
+      selectedDivision,
+      divisions,
+      selectedTeam,
+      teams,
+      futureGames
+    } = this.state
 
     return (
-      <Wrapper>
-        {this.state.isLoading ? <Loader/> :
-          <Navigation>
-            <WrappedSelect
-              name="division-select"
-              value={selectedDivision}
-              onChange={this.handleDivisionChange}
-              options={this.state.divisions}
-            />
-            <WrappedSelect
-              name="team-select"
-              value={selectedTeam}
-              onChange={this.handleTeamChange}
-              options={this.state.teams}
-              disabled={this.state.teams.length === 0}
-            />
-          </Navigation>
-        }
-        {this.state.selectedTeam &&
-          <Fragment>
-            <Schedule
-              upcomming
-              title="Upcomming Games"
-              team={this.state.selectedTeam.label}
-              games={this.state.futureGames}
-            />
-            <Standings
-              standings={this.state.standingsData}
-              selectedDivision={this.state.selectedDivision.label}
-            />
-          </Fragment>
-        }
-      </Wrapper>
+      <Fragment>
+        <Header siteTitle="VBall Schedule" />
+        <Wrapper>
+          {isLoading ? <Loader/> :
+            <Options>
+              <Select
+                name="divison-select"
+                value={selectedDivision}
+                onChange={this.handleDivisionChange}
+                options={divisions}
+                label="Divisions"
+              />
+              <Select
+                name="team-select"
+                value={selectedTeam}
+                onChange={this.handleTeamChange}
+                options={teams}
+                label="Teams"
+                disabled={teams.length === 0}
+              />
+            </Options>
+          }
+          <Schedule
+            title="Upcomming Games"
+            team={selectedTeam.label}
+            games={futureGames}
+          />
+        </Wrapper>
+      </Fragment>
     );
   }
 }
@@ -146,17 +145,12 @@ const show = keyframes`
   }
 `
 
-const Navigation = styled.div`
+const Options = styled.div`
   padding-bottom: 20px;
-
   animation: ${show} 0.5s ease-in;
+  display: flex;
+  flex-direction: column;
+  margin-left: 15px;
 `
-
-const WrappedSelect = styled(Select)`
-  margin: 20px;
-  width: 350px;
-`
-
-
 
 export default App;
