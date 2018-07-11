@@ -3,11 +3,18 @@
   "description": "Beach Volleyball Schedule Viewer",
   "version": "1.0.0",
   "author": "Justin Buchanan",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gatsbyjs/gatsby-starter-default"
+  },
+  "keywords": [
+    "gatsby"
+  ],
   "scripts": {
     "build": "gatsby build",
     "develop": "gatsby develop",
-    "format": "prettier --write 'src/**/*.js'",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "NOTE_ENT=test jest --no-cache",
     "deploy": "rm -rf public/ && yarn build && cd public/ && now --public"
   },
   "dependencies": {
@@ -23,15 +30,15 @@
     "styled-components": "^3.3.3"
   },
   "devDependencies": {
-    "prettier": "^1.12.0",
-    "react-select": "^1.2.1"
-  },
-  "keywords": [
-    "gatsby"
-  ],
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/gatsbyjs/gatsby-starter-default"
+    "@babel/plugin-proposal-class-properties": "^7.0.0-beta.53",
+    "@babel/plugin-proposal-optional-chaining": "^7.0.0-beta.53",
+    "@babel/plugin-transform-runtime": "^7.0.0-beta.53",
+    "@babel/preset-env": "^7.0.0-beta.53",
+    "@babel/preset-react": "^7.0.0-beta.53",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-jest": "^23.4.0",
+    "jest": "^23.4.0",
+    "react-select": "^1.2.1",
+    "react-testing-library": "^4.1.2"
   }
 }
