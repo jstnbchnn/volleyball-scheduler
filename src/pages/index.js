@@ -1,11 +1,11 @@
-import React, { Component, Fragment } from 'react'
-import axios from 'axios'
-import styled, { keyframes } from 'styled-components'
+import React, { Component, Fragment } from 'react';
+import axios from 'axios';
+import styled, { keyframes } from 'styled-components';
 
-import Header from '../components/header'
-import { Schedule } from '../components/Schedule'
-import Loader from '../components/Loader'
-import Select from '../components/Select'
+import Header from '../components/header';
+import { Schedule } from '../components/Schedule';
+import Loader from '../components/Loader';
+import Select from '../components/Select';
 
 class App extends Component {
   state = {
@@ -20,51 +20,51 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    const { data: divisions } = await axios.get(process.env.API_BASE_URL)
+    const { data: divisions } = await axios.get(process.env.API_BASE_URL);
 
     const constructedDivisions = divisions.reduce((acc, division) => {
-      const { id, name } = division
+      const { id, name } = division;
 
-      return [...acc, { value: id, label: name }]
-    }, [])
+      return [...acc, { value: id, label: name }];
+    }, []);
 
     this.setState({
       divisions: constructedDivisions,
       isLoading: false,
-    })
+    });
   }
 
   handleDivisionChange = async selectedDivision => {
     if (selectedDivision === '') {
-      this.setState({ selectedDivision })
-      return
+      this.setState({ selectedDivision });
+      return;
     }
 
     const { data } = await axios.get(
       `${process.env.API_BASE_URL}/division/${selectedDivision.value}`
-    )
+    );
 
     const teams = data.reduce((acc, team) => {
-      const { id, name } = team
+      const { id, name } = team;
 
-      return [...acc, { value: id, label: name }]
-    }, [])
+      return [...acc, { value: id, label: name }];
+    }, []);
 
     this.setState({
       selectedDivision,
       teams,
       futureGames: null,
       selectedTeam: '',
-    })
+    });
   }
 
   handleTeamChange = async selectedTeam => {
     if (!selectedTeam) {
-      this.setState({ selectedTeam })
-      return
+      this.setState({ selectedTeam });
+      return;
     }
 
-    const { selectedDivision } = this.state
+    const { selectedDivision } = this.state;
 
     const {
       data: { futureGames, pastGames },
@@ -72,13 +72,13 @@ class App extends Component {
       `${process.env.API_BASE_URL}/teams?teamId=${
         selectedTeam.value
       }&divisionId=${selectedDivision.value}`
-    )
+    );
 
     this.setState({
       selectedTeam,
       futureGames,
       pastGames,
-    })
+    });
   }
 
   render() {
@@ -89,7 +89,7 @@ class App extends Component {
       selectedTeam,
       teams,
       futureGames,
-    } = this.state
+    } = this.state;
 
     return (
       <Fragment>
@@ -123,7 +123,7 @@ class App extends Component {
           />
         </Wrapper>
       </Fragment>
-    )
+    );
   }
 }
 
@@ -132,7 +132,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   margin: auto;
-`
+`;
 
 const show = keyframes`
   0% {
@@ -142,7 +142,7 @@ const show = keyframes`
   100% {
     opacity: 1
   }
-`
+`;
 
 const Options = styled.div`
   padding-bottom: 20px;
@@ -150,6 +150,6 @@ const Options = styled.div`
   display: flex;
   flex-direction: column;
   margin-left: 15px;
-`
+`;
 
-export default App
+export default App;
